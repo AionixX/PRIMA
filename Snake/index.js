@@ -192,8 +192,8 @@ var Snake;
         game.appendChild(newFood);
     }
     function getRandomPosition() {
-        let rndX = Math.floor((Math.random() * 19) - 19);
-        let rndY = Math.floor((Math.random() * 14) - 14);
+        let rndX = Math.floor((Math.random() * 38) - 19);
+        let rndY = Math.floor((Math.random() * 28) - 14);
         let random = new ƒ.Vector2(rndX, rndY);
         for (let element of snake) {
             if (element.position.equals(random)) {

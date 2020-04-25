@@ -233,8 +233,8 @@ namespace Snake {
   }
 
   function getRandomPosition(): ƒ.Vector2 {
-    let rndX: number = Math.floor((Math.random() * 19) - 19);
-    let rndY: number = Math.floor((Math.random() * 14) - 14);
+    let rndX: number = Math.floor((Math.random() * 38) - 19);
+    let rndY: number = Math.floor((Math.random() * 28) - 14);
 
     let random: ƒ.Vector2 = new ƒ.Vector2(rndX, rndY);
     for (let element of snake) {
