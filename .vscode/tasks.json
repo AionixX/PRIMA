@@ -13,6 +13,7 @@
             "label": "auto-watch",
             "type": "shell",
             "command": "tsc -watch",
+            "auto": true,
             "runOptions": {
                 "runOn": "folderOpen"
             }
