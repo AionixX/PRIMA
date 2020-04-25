@@ -88,10 +88,10 @@ namespace Snake {
 
   function checkCollisions(): void {
     if (snakeHead.position.y >= 15) {
-      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, -14).toVector3();
+      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, -15).toVector3();
     }
     if (snakeHead.position.y <= -15) {
-      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, 14).toVector3();
+      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, 15).toVector3();
     }
     if (snakeHead.position.x >= 20) {
       snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(-20, snakeHead.position.y).toVector3();
@@ -99,7 +99,7 @@ namespace Snake {
     if (snakeHead.position.x <= -20) {
       snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(20, snakeHead.position.y).toVector3();
     }
-    
+
     if (snakeHead.position.equals(foodPosition)) {
       playerScore++;
       addSnakeElement();
