@@ -200,7 +200,6 @@ var Snake;
                 return getRandomPosition();
             }
         }
-        console.log(random);
         return random;
     }
     function createNode(_name, _mesh, _material, _translation, _scaling) {

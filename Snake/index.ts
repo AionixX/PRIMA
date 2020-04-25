@@ -242,7 +242,6 @@ namespace Snake {
         return getRandomPosition();
       }
     }
-    console.log(random);
     return random;
   }
 
