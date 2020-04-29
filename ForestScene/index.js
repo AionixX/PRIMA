@@ -1,7 +1,7 @@
 "use strict";
 var ForestScene;
 (function (ForestScene) {
-    window.addEventListener("click", init);
+    window.addEventListener("load", init);
     window.addEventListener("keypress", handleKeyPressed);
     var ƒ = FudgeCore;
     let forest;
@@ -24,28 +24,90 @@ var ForestScene;
         switch (_event.key) {
             case "a":
                 forest.cmpTransform.local.rotateZ(1);
+                viewport.draw();
                 break;
             case "d":
                 forest.cmpTransform.local.rotateZ(-1);
+                viewport.draw();
                 break;
             case "w":
                 forest.cmpTransform.local.rotateX(-1);
+                viewport.draw();
                 break;
             case "s":
                 forest.cmpTransform.local.rotateX(1);
+                viewport.draw();
+                break;
+            case " ":
+                init();
                 break;
         }
-        viewport.draw();
     }
     function createForest() {
         let newForest = new ƒ.Node("Forest");
         newForest.addComponent(new ƒ.ComponentTransform);
         newForest.appendChild(createGround(new ƒ.Vector3(20, 20, 1)));
-        newForest.appendChild(createTree(new ƒ.Vector3(8, 3, 2), 5, 4));
-        newForest.appendChild(createTree(new ƒ.Vector3(-6, 2, 2), 5, 4));
-        newForest.appendChild(createTree(new ƒ.Vector3(-3, -1, 2), 5, 4));
-        newForest.appendChild(createTree(new ƒ.Vector3(-5, -5, 2), 5, 4));
+        newForest.appendChild(createRandomForest());
         return newForest;
+    }
+    function createRandomForest() {
+        let forest = new ƒ.Node("RandForest");
+        let randomTreeCount = Math.random() * 10;
+        for (let i = 0; i < randomTreeCount; i++) {
+            let randomX = (Math.random() * 18) - 9;
+            let randomY = (Math.random() * 18) - 9;
+            let randomHeight = (Math.random() * 3) + 2;
+            let randomLeafs = (Math.random() * 3) + 2;
+            let newTree = createTree(new ƒ.Vector3(randomX, randomY, 2), randomHeight, randomLeafs);
+            forest.appendChild(newTree);
+        }
+        let randomMushroomCount = Math.random() * 5;
+        for (let i = 0; i < randomMushroomCount; i++) {
+            let rndX = Math.random() * 18 - 9;
+            let rndY = Math.random() * 18 - 9;
+            forest.appendChild(createMushroomCluster(new ƒ.Vector3(rndX, rndY, 2)));
+        }
+        return forest;
+    }
+    function createMushroomCluster(position) {
+        let cluster = new ƒ.Node("MushroomCluster");
+        let rnd = Math.random() * 5;
+        for (let i = 0; i < rnd; i++) {
+            let rndX = Math.random() * 4 - 2;
+            let rndY = Math.random() * 4 - 2;
+            let rndHeight = Math.random() + 0.2;
+            let rndWidth = Math.random() * 0.6 + 0.2;
+            cluster.appendChild(createMushroom(rndHeight, rndWidth, new ƒ.Vector3(position.x - rndX, position.y - rndY, rndHeight / 2)));
+        }
+        return cluster;
+    }
+    function createMushroom(height, width, position) {
+        let mesh = new ƒ.MeshCube();
+        let cmpMesh = new ƒ.ComponentMesh(mesh);
+        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
+        let cmpMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
+        let mushroomTrunk = new ƒ.Node("MushroomTrunk");
+        mushroomTrunk.addComponent(new ƒ.ComponentTransform());
+        mushroomTrunk.addComponent(cmpMesh);
+        mushroomTrunk.addComponent(cmpMaterial);
+        mushroomTrunk.getComponent(ƒ.ComponentTransform).local.scale(new ƒ.Vector3(width, width, height));
+        mushroomTrunk.cmpTransform.local.translation = position;
+        mushroomTrunk.cmpTransform.local.translateZ(height / 2);
+        let meshHead = new ƒ.MeshCube();
+        let cmpMeshHead = new ƒ.ComponentMesh(meshHead);
+        let mtrSolidRed = new ƒ.Material("SolidRed", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("RED")));
+        let cmpMaterialWhite = new ƒ.ComponentMaterial(mtrSolidRed);
+        let mushroomHead = new ƒ.Node("MushroomTrunk");
+        mushroomHead.addComponent(new ƒ.ComponentTransform());
+        mushroomHead.addComponent(cmpMeshHead);
+        mushroomHead.addComponent(cmpMaterialWhite);
+        mushroomHead.getComponent(ƒ.ComponentTransform).local.scale(new ƒ.Vector3(1.3 * width, 1.3 * width, 1.3 * width));
+        mushroomHead.cmpTransform.local.translation = position;
+        mushroomHead.cmpTransform.local.translateZ(height + (width / 2));
+        let mushroom = new ƒ.Node("Mushroom");
+        mushroom.appendChild(mushroomTrunk);
+        mushroom.appendChild(mushroomHead);
+        return mushroom;
     }
     function createTree(_position, _trunkHeight, _leafsSegments) {
         let tree = new ƒ.Node("Tree");
@@ -85,7 +147,7 @@ var ForestScene;
         leafSegment.addComponent(cmpMesh);
         leafSegment.addComponent(cmpMaterial);
         leafSegment.getComponent(ƒ.ComponentTransform).local.rotateX(90);
-        leafSegment.getComponent(ƒ.ComponentTransform).local.translateY(((_maxSegments - _segmentNumber) + (_maxSegments / _segmentNumber)) + (_trunkHeight / 2) - 1);
+        leafSegment.getComponent(ƒ.ComponentTransform).local.translateY(((_maxSegments / _segmentNumber - 1) * (2 * _segmentNumber)) + (_trunkHeight));
         leafSegment.getComponent(ƒ.ComponentTransform).local.scale(new ƒ.Vector3(_segmentNumber, _segmentNumber, _segmentNumber));
         return leafSegment;
     }
