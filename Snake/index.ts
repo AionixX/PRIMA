@@ -41,7 +41,7 @@ namespace Snake {
   let scoreElement: HTMLHeadElement;
   let againButton: HTMLButtonElement;
 
-  let processTime: number = 250;
+  let fps: number = 3;
   let gamePaused: boolean = false;
   let gameEnd: boolean = false;
 
@@ -71,7 +71,8 @@ namespace Snake {
 
     document.addEventListener("keypress", handleInput);
 
-    setTimeout(updateSnake, processTime);
+    ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, updateSnake);
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);
   }
 
   function updateSnake(): void {
@@ -82,23 +83,10 @@ namespace Snake {
         viewport.draw();
         checkCollisions();
       }
-      setTimeout(updateSnake, processTime);
     }
   }
 
   function checkCollisions(): void {
-    if (snakeHead.position.y >= 15) {
-      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, -15).toVector3();
-    }
-    if (snakeHead.position.y <= -15) {
-      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, 15).toVector3();
-    }
-    if (snakeHead.position.x >= 20) {
-      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(-20, snakeHead.position.y).toVector3();
-    }
-    if (snakeHead.position.x <= -20) {
-      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(20, snakeHead.position.y).toVector3();
-    }
 
     if (snakeHead.position.equals(foodPosition)) {
       playerScore++;
@@ -156,6 +144,19 @@ namespace Snake {
   function moveSnake(): void {
     direction = newDirection;
 
+    if (snakeHead.position.y >= 14 && direction.y == 1) {
+      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, -15).toVector3();
+    }
+    if (snakeHead.position.y <= -14 && direction.y == -1) {
+      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, 15).toVector3();
+    }
+    if (snakeHead.position.x >= 19 && direction.x == 1) {
+      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(-20, snakeHead.position.y).toVector3();
+    }
+    if (snakeHead.position.x <= -19 && direction.x == -1) {
+      snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(20, snakeHead.position.y).toVector3();
+    }
+
     snakeHead.elementNode.cmpTransform.local.translate(direction.toVector3());
     let endReached: boolean = false;
     let actualElement: SnakeElement = snakeHead;
@@ -203,6 +204,11 @@ namespace Snake {
   }
 
   function addSnakeElement(): void {
+
+    ƒ.Loop.stop();
+    fps++;
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);
+
     addedNewElement = true;
 
     let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("White")));

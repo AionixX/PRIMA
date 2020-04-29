@@ -29,7 +29,7 @@ var Snake;
     let playerScore = 0;
     let scoreElement;
     let againButton;
-    let processTime = 250;
+    let fps = 3;
     let gamePaused = false;
     let gameEnd = false;
     let addedNewElement = false;
@@ -51,7 +51,8 @@ var Snake;
         viewport.initialize("Viewport", game, camera, canvas);
         viewport.draw();
         document.addEventListener("keypress", handleInput);
-        setTimeout(updateSnake, processTime);
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, updateSnake);
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);
     }
     function updateSnake() {
         if (!gameEnd) {
@@ -61,22 +62,9 @@ var Snake;
                 viewport.draw();
                 checkCollisions();
             }
-            setTimeout(updateSnake, processTime);
         }
     }
     function checkCollisions() {
-        if (snakeHead.position.y >= 15) {
-            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, -15).toVector3();
-        }
-        if (snakeHead.position.y <= -15) {
-            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, 15).toVector3();
-        }
-        if (snakeHead.position.x >= 20) {
-            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(-20, snakeHead.position.y).toVector3();
-        }
-        if (snakeHead.position.x <= -20) {
-            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(20, snakeHead.position.y).toVector3();
-        }
         if (snakeHead.position.equals(foodPosition)) {
             playerScore++;
             addSnakeElement();
@@ -131,6 +119,18 @@ var Snake;
     }
     function moveSnake() {
         direction = newDirection;
+        if (snakeHead.position.y >= 14 && direction.y == 1) {
+            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, -15).toVector3();
+        }
+        if (snakeHead.position.y <= -14 && direction.y == -1) {
+            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(snakeHead.position.x, 15).toVector3();
+        }
+        if (snakeHead.position.x >= 19 && direction.x == 1) {
+            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(-20, snakeHead.position.y).toVector3();
+        }
+        if (snakeHead.position.x <= -19 && direction.x == -1) {
+            snakeHead.elementNode.cmpTransform.local.translation = new ƒ.Vector2(20, snakeHead.position.y).toVector3();
+        }
         snakeHead.elementNode.cmpTransform.local.translate(direction.toVector3());
         let endReached = false;
         let actualElement = snakeHead;
@@ -168,6 +168,9 @@ var Snake;
         return game;
     }
     function addSnakeElement() {
+        ƒ.Loop.stop();
+        fps++;
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);
         addedNewElement = true;
         let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("White")));
         let meshQuad = new ƒ.MeshQuad;
