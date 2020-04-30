@@ -7,7 +7,7 @@ namespace Snake {
     nextElement: SnakeElement;
     position: ƒ.Vector2;
   
-    constructor(elementNode: ƒ.Node, position: ƒ.Vector2, previousElement: SnakeElement, nextElement: SnakeElement, isSnakeHead: boolean) {
+    constructor(elementNode:ƒ.Node, position: ƒ.Vector2, previousElement: SnakeElement, nextElement: SnakeElement, isSnakeHead: boolean) {
       this.isSnakeHead = isSnakeHead;
   
       if (isSnakeHead == true) {
