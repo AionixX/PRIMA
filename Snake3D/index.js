@@ -1,102 +1,133 @@
 "use strict";
 var Snake3D;
 (function (Snake3D) {
-    class SnakeElement {
-        constructor(elementNode, position, isSnakeHead) {
-            this.previousElement = null;
-            this.nextElement = null;
-            this.isSnakeHead = isSnakeHead;
-            this.elementNode = elementNode;
-            this.position = position;
-        }
-    }
     var ƒ = FudgeCore;
     window.addEventListener("load", Init);
     let camera;
     let viewport;
     let gameField;
-    let SnakeHead;
-    let gameFieldWidth = 20;
-    let gameFieldHeight = 20;
-    let gameFieldDepth = 20;
+    let snake;
+    let newRotation;
+    let gameFieldSize = 20;
     function Init() {
         camera = new ƒ.ComponentCamera();
         camera.pivot.translateZ(50);
         camera.pivot.rotateY(180);
         gameField = CreateGameField();
+        snake = new Snake3D.Snake(new ƒ.Vector3(0, 0, gameFieldSize / 2));
+        gameField.appendChild(snake.head.elementNode);
+        newRotation = ƒ.Vector3.ZERO();
+        gameField.appendChild(snake.AddSnakeElement().elementNode);
+        gameField.appendChild(snake.AddSnakeElement().elementNode);
+        gameField.appendChild(snake.AddSnakeElement().elementNode);
         const canvas = document.querySelector("canvas");
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", gameField, camera, canvas);
         viewport.draw();
-        document.addEventListener("keypress", HandleInput);
+        document.addEventListener("keydown", HandleInput);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, Update);
         ƒ.Loop.start();
+        setInterval(SnakeLoop, 300);
+    }
+    function SnakeLoop() {
+        snake.Rotate(newRotation);
+        snake.Move();
+        snake.UpdatePosition();
+        newRotation = ƒ.Vector3.ZERO();
+        CheckCollision();
+        CheckWalls();
     }
     function Update() {
-        console.log("Update");
+        camera.pivot.lookAt(ƒ.Vector3.ZERO());
         viewport.draw();
     }
     function HandleInput(_event) {
         switch (_event.code) {
-            case ƒ.KEYBOARD_CODE.NUMPAD8:
+            case ƒ.KEYBOARD_CODE.ARROW_UP:
+                camera.pivot.translateY(2);
                 break;
-            case ƒ.KEYBOARD_CODE.NUMPAD5:
+            case ƒ.KEYBOARD_CODE.ARROW_DOWN:
+                camera.pivot.translateY(-2);
                 break;
-            case ƒ.KEYBOARD_CODE.NUMPAD4:
+            case ƒ.KEYBOARD_CODE.ARROW_LEFT:
+                camera.pivot.translateX(2);
                 break;
-            case ƒ.KEYBOARD_CODE.NUMPAD6:
-                break;
-            case ƒ.KEYBOARD_CODE.W:
+            case ƒ.KEYBOARD_CODE.ARROW_RIGHT:
+                camera.pivot.translateX(-2);
                 break;
             case ƒ.KEYBOARD_CODE.A:
-                break;
-            case ƒ.KEYBOARD_CODE.S:
+                newRotation = new ƒ.Vector3(0, 0, 90);
                 break;
             case ƒ.KEYBOARD_CODE.D:
+                newRotation = new ƒ.Vector3(0, 0, -90);
                 break;
+            default:
+                newRotation = ƒ.Vector3.ZERO();
         }
     }
-    function AddSnakeElement(element) {
-        if (element.nextElement == null) {
-            let newElement = CreateSnakeElement(element.position);
-            let snakeElement = new SnakeElement(newElement, element.position, false);
-            element.nextElement = snakeElement;
-            snakeElement.previousElement = element;
+    function CheckWalls() {
+        if (snake.head.position.y == 10) {
+            if (snake.head.position.z == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.z == -11) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.x == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.x == -11) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
         }
-        else {
-            AddSnakeElement(element.nextElement);
+        if (snake.head.position.y == -11) {
+            if (snake.head.position.z == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.z == -11) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.x == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+        }
+        if (snake.head.position.x == 10) {
+            if (snake.head.position.z == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.z == -11) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.y == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+        }
+        if (snake.head.position.x == -11) {
+            if (snake.head.position.z == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.z == -11) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.y == -11) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
+            if (snake.head.position.y == 10) {
+                newRotation = new ƒ.Vector3(-90, 0, 0);
+            }
         }
     }
-    function CreateSnakeHead() {
-        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("White")));
-        let meshSphere = new ƒ.MeshCube;
-        let headElement = createNode("SnakeHead", meshSphere, mtrSolidWhite, new ƒ.Vector3(0, 0, 0), new ƒ.Vector3(1, 1, 1));
-        let snakeHead = new SnakeElement(headElement, new ƒ.Vector3(0, 0, 0), true);
-        return snakeHead;
+    function CheckCollision() {
+        //TODO Collision
     }
     function CreateGameField() {
         let gameField = new ƒ.Node("GameField");
         gameField.addComponent(new ƒ.ComponentTransform);
         let mtrSolidGray = new ƒ.Material("SolidGray", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("Gray")));
         let meshQuad = new ƒ.MeshCube;
-        for (let x = 0; x < gameFieldWidth; x++) {
-            for (let y = 0; y < gameFieldHeight; y++) {
-                for (let z = 0; z < gameFieldDepth; z++) {
-                    let posX = x - (gameFieldWidth / 2);
-                    let posY = y - (gameFieldHeight / 2);
-                    let posZ = z - (gameFieldDepth / 2);
-                    let cube = createNode("GameCube", meshQuad, mtrSolidGray, new ƒ.Vector3(posX, posY, posZ), new ƒ.Vector3(1, 1, 1));
-                    gameField.appendChild(cube);
-                }
-            }
-        }
+        let cube = createNode("GameCube", meshQuad, mtrSolidGray, new ƒ.Vector3(-0.5, -0.5, -0.5), new ƒ.Vector3(gameFieldSize, gameFieldSize, gameFieldSize));
+        gameField.appendChild(cube);
         return gameField;
-    }
-    function CreateSnakeElement(position) {
-        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("White")));
-        let meshQuad = new ƒ.MeshCube;
-        let element = createNode("SnakeElement", meshQuad, mtrSolidWhite, position, new ƒ.Vector3(1, 1, 1));
-        return element;
     }
     function createNode(_name, _mesh, _material, _translation, _scaling) {
         let node = new ƒ.Node(_name);

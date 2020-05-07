@@ -9,6 +9,12 @@ var L04_SnakeControl;
             console.log("Creating Snake");
             this.createSegement(4);
         }
+        set direction(_new) {
+            if (this.dirCurrent.equals(ƒ.Vector3.SCALE(_new, -1)))
+                return;
+            console.log(this.dirCurrent, _new);
+            this.dirNew = _new;
+        }
         move() {
             this.dirCurrent = this.dirNew || this.dirCurrent;
             let child = this.getChildren()[0];
@@ -22,12 +28,6 @@ var L04_SnakeControl;
                 segment.addComponent(cmpNew);
                 cmpNew = cmpPrev;
             }
-        }
-        set direction(_new) {
-            if (this.dirCurrent.equals(ƒ.Vector3.SCALE(_new, -1)))
-                return;
-            console.log(this.dirCurrent, _new);
-            this.dirNew = _new;
         }
         createSegement(_segments) {
             let mesh = new ƒ.MeshQuad();
