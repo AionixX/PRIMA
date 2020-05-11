@@ -72,7 +72,8 @@ namespace Snake3D {
       let actualElement: SnakeElement = this.head.nextElement;
 
       while (!endReached) {
-        if (actualElement.position == position) {
+        let result: ƒ.Vector3 = new ƒ.Vector3(actualElement.position.x - position.x, actualElement.position.y - position.y, actualElement.position.z - position.z);
+        if (result.magnitude < 1) {
           return true;
         }
         if (actualElement.nextElement == null) {
@@ -80,6 +81,124 @@ namespace Snake3D {
         } else {
           actualElement = actualElement.nextElement;
         }
+      }
+      return false;
+    }
+    public IsSnakeOnPosition(position: ƒ.Vector3): boolean {
+      let result: ƒ.Vector3 = new ƒ.Vector3(this.head.position.x - position.x, this.head.position.y - position.y, this.head.position.z - position.z);
+      if (result.magnitude < 1)
+        return true;
+      return false;
+    }
+    public IsOnEdge(): boolean {
+      if (this.IsOnTopFrontEdge())
+        return true;
+      if (this.IsOnTopLeftEdge())
+        return true;
+      if (this.IsOnTopBackEdge())
+        return true;
+      if (this.IsOnTopRightEdge())
+        return true;
+      if (this.IsOnBottomFrontEdge())
+        return true;
+      if (this.IsOnBottomLeftEdge())
+        return true;
+      if (this.IsOnBottomBackEdge())
+        return true;
+      if (this.IsOnBottomRightEdge())
+        return true;
+      if (this.IsOnFrontLeftEdge())
+        return true;
+      if (this.IsOnFrontRightEdge())
+        return true;
+      if (this.IsOnBackLeftEdge())
+        return true;
+      if (this.IsOnBackRightEdge())
+        return true;
+
+      return false;
+    }
+    public IsOnTopFrontEdge(): boolean {
+      if (this.head.position.y >= 10 && this.head.position.z >= 10) {
+        console.log("IsOnTopFrontEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnTopLeftEdge(): boolean {
+      if (this.head.position.y >= 10 && this.head.position.x <= -11) {
+        console.log("IsOnTopLeftEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnTopBackEdge(): boolean {
+      if (this.head.position.y >= 10 && this.head.position.z <= -11) {
+        console.log("IsOnTopBackEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnTopRightEdge(): boolean {
+      if (this.head.position.y >= 10 && this.head.position.x >= 10) {
+        console.log("IsOnTopRightEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnBottomFrontEdge(): boolean {
+      if (this.head.position.y <= -11 && this.head.position.z >= 10) {
+        console.log("IsOnBottomFrontEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnBottomLeftEdge(): boolean {
+      if (this.head.position.y <= -11 && this.head.position.x <= -11) {
+        console.log("IsOnBottomLeftEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnBottomBackEdge(): boolean {
+      if (this.head.position.y <= -11 && this.head.position.z <= -11) {
+        console.log("IsOnBottomBackEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnBottomRightEdge(): boolean {
+      if (this.head.position.y <= -11 && this.head.position.x >= 10) {
+        console.log("IsOnBottomRightEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnFrontLeftEdge(): boolean {
+      if (this.head.position.z >= 10 && this.head.position.x <= -11) {
+        console.log("IsOnFrontLeftEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnFrontRightEdge(): boolean {
+      if (this.head.position.z >= 10 && this.head.position.x >= 10) {
+        console.log("IsOnFrontRightEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnBackLeftEdge(): boolean {
+      if (this.head.position.z <= -11 && this.head.position.x <= -11) {
+        console.log("IsOnBackLeftEdge");
+        return true;
+      }
+      return false;
+    }
+    public IsOnBackRightEdge(): boolean {
+      if (this.head.position.z <= -11 && this.head.position.x >= 10) {
+        console.log("IsOnBackRightEdge");
+        return true;
       }
       return false;
     }

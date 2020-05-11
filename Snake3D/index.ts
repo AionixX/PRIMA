@@ -13,17 +13,23 @@ namespace Snake3D {
   let newRotation: ƒ.Vector3;
 
   let gameFieldSize: number = 20;
+  let gamePaused: boolean = false;
+  let gameEnd: boolean = false;
+  let score: number = 0;
+
+  let food: ƒ.Node;
 
   function Init(): void {
     camera = new ƒ.ComponentCamera();
     camera.pivot.translateZ(50);
     camera.pivot.rotateY(180);
-    
-
     gameField = CreateGameField();
 
     snake = new Snake(new ƒ.Vector3(0, 0, gameFieldSize / 2));
     gameField.appendChild(snake.head.elementNode);
+
+    food = CreateFood();
+    gameField.appendChild(food);
 
     newRotation = ƒ.Vector3.ZERO();
     gameField.appendChild(snake.AddSnakeElement().elementNode);
@@ -40,16 +46,22 @@ namespace Snake3D {
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, Update);
     ƒ.Loop.start();
-
-    setInterval(SnakeLoop, 300);
+    setTimeout(SnakeLoop, 150);
   }
   function SnakeLoop(): void {
-    snake.Rotate(newRotation);
-    snake.Move();
-    snake.UpdatePosition();
-    newRotation = ƒ.Vector3.ZERO();
-    CheckCollision();
-    CheckWalls();
+    if (!gameEnd) {
+      if (!gamePaused) {
+        snake.Rotate(newRotation);
+        snake.Move();
+        snake.UpdatePosition();
+        newRotation = ƒ.Vector3.ZERO();
+        CheckCollision();
+        CheckWalls();
+        let fps: number = 150 - (score * 5);
+        console.log(fps);
+        setTimeout(SnakeLoop, fps > 5 ? fps : 5);
+      }
+    }
   }
   function Update(): void {
     camera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -70,69 +82,112 @@ namespace Snake3D {
         camera.pivot.translateX(-2);
         break;
       case ƒ.KEYBOARD_CODE.A:
-        newRotation = new ƒ.Vector3(0, 0, 90);
+        if (!snake.IsOnEdge()) {
+          newRotation = new ƒ.Vector3(0, 0, 90);
+        }
         break;
       case ƒ.KEYBOARD_CODE.D:
-        newRotation = new ƒ.Vector3(0, 0, -90);
+        if (!snake.IsOnEdge()) {
+          newRotation = new ƒ.Vector3(0, 0, -90);
+        }
         break;
+      case ƒ.KEYBOARD_CODE.SPACE:
+        gamePaused = !gamePaused;
+        setTimeout(SnakeLoop, 150);
       default:
         newRotation = ƒ.Vector3.ZERO();
     }
   }
+  function CreateFood(): ƒ.Node {
+    let mtrSolidRed: ƒ.Material = new ƒ.Material("SolidRed", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
+    let meshQuad: ƒ.MeshCube = new ƒ.MeshCube;
+    let rndPos: ƒ.Vector3 = GetRandomPosition();
+    let food: ƒ.Node = createNode("Food", meshQuad, mtrSolidRed, rndPos, new ƒ.Vector3(0.8, 0.8, 0.8));
+
+    return food;
+  }
+  function GetRandomPosition(): ƒ.Vector3 {
+    let rndPos: ƒ.Vector3 = new ƒ.Vector3(10, 0, 0);
+    let rndSide: number = Math.floor(Math.random() * 5);
+    switch (rndSide) {
+      case 0:
+        rndPos = RndPosLeft();
+        break;
+      case 1:
+        rndPos = RndPosUp();
+        break;
+      case 2:
+        rndPos = RndPosRight();
+        break;
+      case 3:
+        rndPos = RndPosDown();
+        break;
+      case 4:
+        rndPos = RndPosFront();
+        break;
+      case 5:
+        rndPos = RndPosBack();
+        break;
+    }
+    return rndPos;
+  }
+  function RndPosLeft(): ƒ.Vector3 {
+    let pos: ƒ.Vector3 = new ƒ.Vector3();
+    pos.x = -11;
+    pos.y = Math.floor((Math.random() * 18) - 9);
+    pos.z = Math.floor((Math.random() * 18) - 9);
+    return pos;
+  }
+  function RndPosUp(): ƒ.Vector3 {
+    let pos: ƒ.Vector3 = new ƒ.Vector3();
+    pos.x = Math.floor((Math.random() * 18) - 9);
+    pos.y = 10;
+    pos.z = Math.floor((Math.random() * 18) - 9);
+    return pos;
+  }
+  function RndPosRight(): ƒ.Vector3 {
+    let pos: ƒ.Vector3 = new ƒ.Vector3();
+    pos.x = 10;
+    pos.y = Math.floor((Math.random() * 18) - 9);
+    pos.z = Math.floor((Math.random() * 18) - 9);
+    return pos;
+  }
+  function RndPosDown(): ƒ.Vector3 {
+    let pos: ƒ.Vector3 = new ƒ.Vector3();
+    pos.x = Math.floor((Math.random() * 18) - 9);
+    pos.y = -11;
+    pos.z = Math.floor((Math.random() * 18) - 9);
+    return pos;
+  }
+  function RndPosFront(): ƒ.Vector3 {
+    let pos: ƒ.Vector3 = new ƒ.Vector3();
+    pos.x = Math.floor((Math.random() * 18) - 9);
+    pos.y = Math.floor((Math.random() * 18) - 9);
+    pos.z = 10;
+    return pos;
+  }
+  function RndPosBack(): ƒ.Vector3 {
+    let pos: ƒ.Vector3 = new ƒ.Vector3();
+    pos.x = Math.floor((Math.random() * 18) - 9);
+    pos.y = Math.floor((Math.random() * 18) - 9);
+    pos.z = -11;
+    return pos;
+  }
   function CheckWalls(): void {
-    if (snake.head.position.y == 10) {
-      if (snake.head.position.z == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.z == -11) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.x == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.x == -11) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-    }
-    if (snake.head.position.y == -11) {
-      if (snake.head.position.z == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.z == -11) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.x == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-    }
-    if (snake.head.position.x == 10) {
-      if (snake.head.position.z == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.z == -11) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.y == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-    }
-    if (snake.head.position.x == -11) {
-      if (snake.head.position.z == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.z == -11) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.y == -11) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
-      if (snake.head.position.y == 10) {
-        newRotation = new ƒ.Vector3(-90, 0, 0);
-      }
+    console.log(snake.head.position);
+    if (snake.IsOnEdge()) {
+      newRotation = new ƒ.Vector3(-90, 0, 0);
     }
   }
   function CheckCollision(): void {
-    //TODO Collision
+    if (snake.IsSnakeCollidingWith(food.cmpTransform.local.translation)) {
+      score++;
+      gameField.appendChild(snake.AddSnakeElement().elementNode);
+      food.cmpTransform.local.translation = GetRandomPosition();
+    }
+    if (snake.IsSnakeCollidingWhithItSelf()) {
+      gameEnd = true;
+    }
   }
   function CreateGameField(): ƒ.Node {
     let gameField: ƒ.Node = new ƒ.Node("GameField");
