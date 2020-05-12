@@ -1,4 +1,4 @@
-namespace L05_Snake3DStart {
+namespace L06_Snake3D_HeadControl {
   import ƒ = FudgeCore;
   import ƒAid = FudgeAid;
 
@@ -39,27 +39,35 @@ namespace L05_Snake3DStart {
   }
 
   function control(_event: KeyboardEvent): void {
-    let direction: ƒ.Vector3;
-    direction = ƒ.Keyboard.mapToValue(ƒ.Vector3.Y(), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.W]);
-    direction.add(ƒ.Keyboard.mapToValue(ƒ.Vector3.Y(-1), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.S]));
+    // let direction: ƒ.Vector3;
+    // direction = ƒ.Keyboard.mapToValue(ƒ.Vector3.Y(), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.W]);
+    // direction.add(ƒ.Keyboard.mapToValue(ƒ.Vector3.Y(-1), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.S]));
 
-    if (direction.y == 0) {
-      direction = ƒ.Keyboard.mapToValue(ƒ.Vector3.X(), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.D]);
-      direction.add(ƒ.Keyboard.mapToValue(ƒ.Vector3.X(-1), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.A]));
-    }
+    // if (direction.y == 0) {
+    //   direction = ƒ.Keyboard.mapToValue(ƒ.Vector3.X(), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.D]);
+    //   direction.add(ƒ.Keyboard.mapToValue(ƒ.Vector3.X(-1), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.A]));
+    // }
 
-    if (!direction.equals(ƒ.Vector3.ZERO()))
-      snake.direction = direction;
+    // if (!direction.equals(ƒ.Vector3.ZERO()))
+    //   snake.direction = direction;
 
     let rotation: ƒ.Vector3 = ƒ.Vector3.ZERO();
-    rotation = new ƒ.Vector3(
-      _event.code == ƒ.KEYBOARD_CODE.ARROW_DOWN ? 90 : (_event.code == ƒ.KEYBOARD_CODE.ARROW_UP ? -90 : 0),
-      _event.code == ƒ.KEYBOARD_CODE.ARROW_RIGHT ? 90 : (_event.code == ƒ.KEYBOARD_CODE.ARROW_LEFT ? -90 : 0),
-      0);
+
+    switch (_event.code) {
+      case ƒ.KEYBOARD_CODE.ARROW_RIGHT:
+        rotation = ƒ.Vector3.Y(-90);
+        break;
+      case ƒ.KEYBOARD_CODE.ARROW_LEFT:
+        rotation = ƒ.Vector3.Y(90);
+        break;
+      case ƒ.KEYBOARD_CODE.SPACE:
+        rotation = ƒ.Vector3.Z(-90);
+        break;
+      default:
+        return;
+    }
 
     snake.rotate(rotation);
-    cosys.mtxLocal.rotate(rotation);
-
-
+    // cosys.mtxLocal.rotate(rotation);
   }
 }
