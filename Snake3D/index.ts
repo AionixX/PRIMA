@@ -16,6 +16,7 @@ namespace Snake3D {
   let gamePaused: boolean = false;
   let gameEnd: boolean = false;
   let score: number = 0;
+  let scoreSpan: HTMLSpanElement;
 
   let food: ƒ.Node;
 
@@ -30,6 +31,8 @@ namespace Snake3D {
 
     food = CreateFood();
     gameField.appendChild(food);
+
+    scoreSpan = document.querySelector("#score");
 
     newRotation = ƒ.Vector3.ZERO();
     gameField.appendChild(snake.AddSnakeElement().elementNode);
@@ -182,6 +185,7 @@ namespace Snake3D {
   function CheckCollision(): void {
     if (snake.IsSnakeCollidingWith(food.cmpTransform.local.translation)) {
       score++;
+      scoreSpan.innerText = score.toString();
       gameField.appendChild(snake.AddSnakeElement().elementNode);
       food.cmpTransform.local.translation = GetRandomPosition();
     }
