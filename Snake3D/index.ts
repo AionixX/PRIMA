@@ -24,25 +24,27 @@ namespace Snake3D {
     camera = new ƒ.ComponentCamera();
     camera.pivot.translateZ(50);
     camera.pivot.rotateY(180);
+
     gameField = CreateGameField();
+    gameField.appendChild(CreateLights());
 
     snake = new Snake(new ƒ.Vector3(0, 0, gameFieldSize / 2));
-    gameField.appendChild(snake.head.elementNode);
-
     food = CreateFood();
-    gameField.appendChild(food);
-
     scoreSpan = document.querySelector("#score");
 
     newRotation = ƒ.Vector3.ZERO();
+
+    gameField.appendChild(snake.head.elementNode);
+    gameField.appendChild(food);
+
     gameField.appendChild(snake.AddSnakeElement().elementNode);
     gameField.appendChild(snake.AddSnakeElement().elementNode);
     gameField.appendChild(snake.AddSnakeElement().elementNode);
+
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
 
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", gameField, camera, canvas);
-
     viewport.draw();
 
     document.addEventListener("keydown", HandleInput);
@@ -61,13 +63,13 @@ namespace Snake3D {
         CheckCollision();
         CheckWalls();
         let fps: number = 150 - (score * 5);
-        console.log(fps);
         setTimeout(SnakeLoop, fps > 5 ? fps : 5);
       }
     }
   }
   function Update(): void {
     camera.pivot.lookAt(ƒ.Vector3.ZERO());
+    console.log(camera.pivot.translation.z);
     viewport.draw();
   }
   function HandleInput(_event: KeyboardEvent): void {
@@ -101,8 +103,23 @@ namespace Snake3D {
         newRotation = ƒ.Vector3.ZERO();
     }
   }
+  function CreateLights(): ƒ.Node {
+    //let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(new ƒ.Color(1, 1, 0.1)));
+    let lights: ƒ.Node = new ƒ.Node("lights");
+
+    let cmpLightDirectionFront: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(new ƒ.Color(1, 1, 1)));
+    cmpLightDirectionFront.pivot.lookAt(new ƒ.Vector3(-8, -10, 15));
+
+    let cmpLightDirectionBack: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(new ƒ.Color(1, 1, 1)));
+    cmpLightDirectionBack.pivot.lookAt(new ƒ.Vector3(8, 10, -15));
+
+    lights.addComponent(cmpLightDirectionFront);
+    lights.addComponent(cmpLightDirectionBack);
+
+    return lights;
+  }
   function CreateFood(): ƒ.Node {
-    let mtrSolidRed: ƒ.Material = new ƒ.Material("SolidRed", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
+    let mtrSolidRed: ƒ.Material = new ƒ.Material("SolidRed", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
     let meshQuad: ƒ.MeshCube = new ƒ.MeshCube;
     let rndPos: ƒ.Vector3 = GetRandomPosition();
     let food: ƒ.Node = createNode("Food", meshQuad, mtrSolidRed, rndPos, new ƒ.Vector3(0.8, 0.8, 0.8));
@@ -177,7 +194,6 @@ namespace Snake3D {
     return pos;
   }
   function CheckWalls(): void {
-    console.log(snake.head.position);
     if (snake.IsOnEdge()) {
       newRotation = new ƒ.Vector3(-90, 0, 0);
     }
@@ -197,7 +213,7 @@ namespace Snake3D {
     let gameField: ƒ.Node = new ƒ.Node("GameField");
     gameField.addComponent(new ƒ.ComponentTransform);
 
-    let mtrSolidGray: ƒ.Material = new ƒ.Material("SolidGray", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("Gray")));
+    let mtrSolidGray: ƒ.Material = new ƒ.Material("SolidGray", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Gray")));
     let meshQuad: ƒ.MeshCube = new ƒ.MeshCube;
 
     let cube: ƒ.Node = createNode("GameCube", meshQuad, mtrSolidGray, new ƒ.Vector3(-0.5, -0.5, -0.5), new ƒ.Vector3(gameFieldSize, gameFieldSize, gameFieldSize));

@@ -198,7 +198,7 @@ var Snake3D;
             return false;
         }
         CreateNewElement() {
-            let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("White")));
+            let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("White")));
             let meshQuad = new ƒ.MeshCube;
             let elementNode = new ƒ.Node("SnakeElement");
             elementNode.addComponent(new ƒ.ComponentTransform());

@@ -203,7 +203,7 @@ namespace Snake3D {
       return false;
     }
     private CreateNewElement(): SnakeElement {
-      let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("White")));
+      let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("White")));
       let meshQuad: ƒ.MeshCube = new ƒ.MeshCube;
 
       let elementNode: ƒ.Node = new ƒ.Node("SnakeElement");

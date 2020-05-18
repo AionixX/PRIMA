@@ -19,12 +19,13 @@ var Snake3D;
         camera.pivot.translateZ(50);
         camera.pivot.rotateY(180);
         gameField = CreateGameField();
+        gameField.appendChild(CreateLights());
         snake = new Snake3D.Snake(new ƒ.Vector3(0, 0, gameFieldSize / 2));
-        gameField.appendChild(snake.head.elementNode);
         food = CreateFood();
-        gameField.appendChild(food);
         scoreSpan = document.querySelector("#score");
         newRotation = ƒ.Vector3.ZERO();
+        gameField.appendChild(snake.head.elementNode);
+        gameField.appendChild(food);
         gameField.appendChild(snake.AddSnakeElement().elementNode);
         gameField.appendChild(snake.AddSnakeElement().elementNode);
         gameField.appendChild(snake.AddSnakeElement().elementNode);
@@ -47,13 +48,13 @@ var Snake3D;
                 CheckCollision();
                 CheckWalls();
                 let fps = 150 - (score * 5);
-                console.log(fps);
                 setTimeout(SnakeLoop, fps > 5 ? fps : 5);
             }
         }
     }
     function Update() {
         camera.pivot.lookAt(ƒ.Vector3.ZERO());
+        console.log(camera.pivot.translation.z);
         viewport.draw();
     }
     function HandleInput(_event) {
@@ -87,8 +88,19 @@ var Snake3D;
                 newRotation = ƒ.Vector3.ZERO();
         }
     }
+    function CreateLights() {
+        //let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(new ƒ.Color(1, 1, 0.1)));
+        let lights = new ƒ.Node("lights");
+        let cmpLightDirectionFront = new ƒ.ComponentLight(new ƒ.LightDirectional(new ƒ.Color(1, 1, 1)));
+        cmpLightDirectionFront.pivot.lookAt(new ƒ.Vector3(-8, -10, 15));
+        let cmpLightDirectionBack = new ƒ.ComponentLight(new ƒ.LightDirectional(new ƒ.Color(1, 1, 1)));
+        cmpLightDirectionBack.pivot.lookAt(new ƒ.Vector3(8, 10, -15));
+        lights.addComponent(cmpLightDirectionFront);
+        lights.addComponent(cmpLightDirectionBack);
+        return lights;
+    }
     function CreateFood() {
-        let mtrSolidRed = new ƒ.Material("SolidRed", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
+        let mtrSolidRed = new ƒ.Material("SolidRed", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
         let meshQuad = new ƒ.MeshCube;
         let rndPos = GetRandomPosition();
         let food = createNode("Food", meshQuad, mtrSolidRed, rndPos, new ƒ.Vector3(0.8, 0.8, 0.8));
@@ -162,7 +174,6 @@ var Snake3D;
         return pos;
     }
     function CheckWalls() {
-        console.log(snake.head.position);
         if (snake.IsOnEdge()) {
             newRotation = new ƒ.Vector3(-90, 0, 0);
         }
@@ -181,7 +192,7 @@ var Snake3D;
     function CreateGameField() {
         let gameField = new ƒ.Node("GameField");
         gameField.addComponent(new ƒ.ComponentTransform);
-        let mtrSolidGray = new ƒ.Material("SolidGray", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("Gray")));
+        let mtrSolidGray = new ƒ.Material("SolidGray", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Gray")));
         let meshQuad = new ƒ.MeshCube;
         let cube = createNode("GameCube", meshQuad, mtrSolidGray, new ƒ.Vector3(-0.5, -0.5, -0.5), new ƒ.Vector3(gameFieldSize, gameFieldSize, gameFieldSize));
         gameField.appendChild(cube);
