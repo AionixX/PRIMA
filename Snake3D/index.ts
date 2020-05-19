@@ -54,18 +54,18 @@ namespace Snake3D {
     setTimeout(SnakeLoop, 150);
   }
   function SnakeLoop(): void {
-    if (!gameEnd) {
-      if (!gamePaused) {
-        snake.Rotate(newRotation);
-        snake.Move();
-        snake.UpdatePosition();
-        newRotation = ƒ.Vector3.ZERO();
-        CheckCollision();
-        CheckWalls();
-        let fps: number = 150 - (score * 5);
-        setTimeout(SnakeLoop, fps > 5 ? fps : 5);
-      }
-    }
+    if (gameEnd)
+      return;
+    if (gamePaused)
+      return;
+    snake.Rotate(newRotation);
+    newRotation = ƒ.Vector3.ZERO();
+    snake.Move();
+    snake.UpdatePosition();
+    CheckCollision();
+    CheckWalls();
+    let tbf: number = 150 - (score * 5);
+    setTimeout(SnakeLoop, tbf > 5 ? tbf : 5);
   }
   function Update(): void {
     camera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -73,8 +73,20 @@ namespace Snake3D {
     viewport.draw();
   }
   function HandleInput(_event: KeyboardEvent): void {
+    if (_event.code == ƒ.KEYBOARD_CODE.ARROW_UP) {
+      camera.pivot.translateY(2);
+    }
+    if (_event.code == ƒ.KEYBOARD_CODE.ARROW_DOWN) {
+      camera.pivot.translateY(-2);
+    }
+    if (_event.code == ƒ.KEYBOARD_CODE.ARROW_LEFT) {
+      camera.pivot.translateX(2);
+    }
+    if (_event.code == ƒ.KEYBOARD_CODE.ARROW_RIGHT) {
+      camera.pivot.translateX(-2);
+    }
     switch (_event.code) {
-      case ƒ.KEYBOARD_CODE.ARROW_UP:
+      /*case ƒ.KEYBOARD_CODE.ARROW_UP:
         camera.pivot.translateY(2);
         break;
       case ƒ.KEYBOARD_CODE.ARROW_DOWN:
@@ -85,7 +97,7 @@ namespace Snake3D {
         break;
       case ƒ.KEYBOARD_CODE.ARROW_RIGHT:
         camera.pivot.translateX(-2);
-        break;
+        break;*/
       case ƒ.KEYBOARD_CODE.A:
         if (!snake.IsOnEdge()) {
           newRotation = new ƒ.Vector3(0, 0, 90);

@@ -9,7 +9,7 @@ var L07_Snake3D_Food;
     L07_Snake3D_Food.mtrStandard = new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("white")));
     let snake;
     let items;
-    let cosys = new ƒAid.NodeCoordinateSystem("ControlSystem");
+    //let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         ƒ.Debug.log(canvas);

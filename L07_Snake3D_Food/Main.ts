@@ -11,7 +11,7 @@ namespace L07_Snake3D_Food {
 
   let snake: Snake;
   let items: ƒ.Node;
-  let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
+  //let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
 
 
 
