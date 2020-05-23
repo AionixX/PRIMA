@@ -1,7 +1,7 @@
-namespace L07_Snake3D_Food {
+namespace L08_Snake3D_Enemy {
   import ƒ = FudgeCore;
   import ƒAid = FudgeAid;
-  ƒ.RenderManager.initialize(true, true);
+  // ƒ.RenderManager.initialize(true, true);
   window.addEventListener("load", hndLoad);
 
 
@@ -11,8 +11,7 @@ namespace L07_Snake3D_Food {
   export let items: ƒ.Node;
 
   let snake: Snake;
-  // let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
-
+  let enemy: Enemy;
 
 
   function hndLoad(_event: Event): void {
@@ -22,6 +21,8 @@ namespace L07_Snake3D_Food {
     let graph: ƒ.Node = new ƒ.Node("Game");
     snake = new Snake();
     graph.addChild(snake);
+    enemy = new Enemy();
+    graph.addChild(enemy);
 
     items = new ƒ.Node("Items");
     graph.addChild(items);
@@ -57,6 +58,8 @@ namespace L07_Snake3D_Food {
   function update(_event: ƒ.Eventƒ): void {
     snake.move();
     snake.eat();
+    enemy.move();
+    enemy.eat();
     moveCamera();
     viewport.draw();
   }

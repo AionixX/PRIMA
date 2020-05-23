@@ -1,25 +1,27 @@
 "use strict";
-var L07_Snake3D_Food;
-(function (L07_Snake3D_Food) {
+var L08_Snake3D_Enemy;
+(function (L08_Snake3D_Enemy) {
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
-    ƒ.RenderManager.initialize(true, true);
+    // ƒ.RenderManager.initialize(true, true);
     window.addEventListener("load", hndLoad);
-    L07_Snake3D_Food.size = 7;
-    L07_Snake3D_Food.mtrStandard = new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("white")));
+    L08_Snake3D_Enemy.size = 7;
+    L08_Snake3D_Enemy.mtrStandard = new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("white")));
     let snake;
-    // let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
+    let enemy;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         ƒ.Debug.log(canvas);
         let graph = new ƒ.Node("Game");
-        snake = new L07_Snake3D_Food.Snake();
+        snake = new L08_Snake3D_Enemy.Snake();
         graph.addChild(snake);
-        L07_Snake3D_Food.items = new ƒ.Node("Items");
-        graph.addChild(L07_Snake3D_Food.items);
+        enemy = new L08_Snake3D_Enemy.Enemy();
+        graph.addChild(enemy);
+        L08_Snake3D_Enemy.items = new ƒ.Node("Items");
+        graph.addChild(L08_Snake3D_Enemy.items);
         for (let i = 0; i < 20; i++)
             placeFood();
-        let cube = new ƒAid.Node("Cube", ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(2 * L07_Snake3D_Food.size - 1)), L07_Snake3D_Food.mtrStandard, new ƒ.MeshCube());
+        let cube = new ƒAid.Node("Cube", ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(2 * L08_Snake3D_Enemy.size - 1)), L08_Snake3D_Enemy.mtrStandard, new ƒ.MeshCube());
         cube.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0.4, 0.6, 0.3, 0.3);
         graph.addChild(cube);
         ƒAid.addStandardLightComponents(graph, new ƒ.Color(0.5, 0.5, 0.5));
@@ -28,9 +30,9 @@ var L07_Snake3D_Food;
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
         cmpCamera.backgroundColor = ƒ.Color.CSS("white");
         // cmpCamera.pivot.rotateY(180);
-        L07_Snake3D_Food.viewport = new ƒ.Viewport();
-        L07_Snake3D_Food.viewport.initialize("Viewport", graph, cmpCamera, canvas);
-        ƒ.Debug.log(L07_Snake3D_Food.viewport);
+        L08_Snake3D_Enemy.viewport = new ƒ.Viewport();
+        L08_Snake3D_Enemy.viewport.initialize("Viewport", graph, cmpCamera, canvas);
+        ƒ.Debug.log(L08_Snake3D_Enemy.viewport);
         document.addEventListener("keydown", control);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 5);
@@ -38,17 +40,19 @@ var L07_Snake3D_Food;
     function update(_event) {
         snake.move();
         snake.eat();
+        enemy.move();
+        enemy.eat();
         moveCamera();
-        L07_Snake3D_Food.viewport.draw();
+        L08_Snake3D_Enemy.viewport.draw();
     }
     function moveCamera() {
         let mtxHead = snake.head.mtxLocal;
         let posCamera = mtxHead.translation;
         posCamera.normalize(30);
-        L07_Snake3D_Food.viewport.camera.pivot.translation = posCamera;
+        L08_Snake3D_Enemy.viewport.camera.pivot.translation = posCamera;
         let up = ƒ.Vector3.X();
         up.transform(mtxHead, false);
-        L07_Snake3D_Food.viewport.camera.pivot.lookAt(ƒ.Vector3.ZERO());
+        L08_Snake3D_Enemy.viewport.camera.pivot.lookAt(ƒ.Vector3.ZERO());
         // viewport.camera.pivot.lookAt(ƒ.Vector3.ZERO(), up);
     }
     function control(_event) {
@@ -69,11 +73,11 @@ var L07_Snake3D_Food;
         snake.rotate(rotation);
     }
     function placeFood() {
-        let position = new ƒ.Vector3(ƒ.Random.default.getRangeFloored(-L07_Snake3D_Food.size, L07_Snake3D_Food.size), ƒ.Random.default.getRangeFloored(-L07_Snake3D_Food.size, L07_Snake3D_Food.size), ƒ.Random.default.getSign() * L07_Snake3D_Food.size);
+        let position = new ƒ.Vector3(ƒ.Random.default.getRangeFloored(-L08_Snake3D_Enemy.size, L08_Snake3D_Enemy.size), ƒ.Random.default.getRangeFloored(-L08_Snake3D_Enemy.size, L08_Snake3D_Enemy.size), ƒ.Random.default.getSign() * L08_Snake3D_Enemy.size);
         position.shuffle();
-        let food = new ƒAid.Node("Food", ƒ.Matrix4x4.TRANSLATION(position), L07_Snake3D_Food.mtrStandard, new ƒ.MeshCube());
+        let food = new ƒAid.Node("Food", ƒ.Matrix4x4.TRANSLATION(position), L08_Snake3D_Enemy.mtrStandard, new ƒ.MeshCube());
         food.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("red");
-        L07_Snake3D_Food.items.addChild(food);
+        L08_Snake3D_Enemy.items.addChild(food);
     }
-})(L07_Snake3D_Food || (L07_Snake3D_Food = {}));
+})(L08_Snake3D_Enemy || (L08_Snake3D_Enemy = {}));
 //# sourceMappingURL=Main.js.map
