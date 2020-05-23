@@ -1,13 +1,17 @@
 namespace Snake3D_Improved {
-  export class Controller {
+  export abstract class Controller {
     public name: string;
-    private snake: Snake;
+    protected snake: Snake;
 
-    public Start(): void {
-
+    constructor (_name: string, _snake: Snake) {
+      this.name = _name;
+      this.snake = _snake;
     }
-    public Update(): void {
-      
+
+    public abstract Update(): void;
+
+    public GetSnake(): Snake {
+      return this.snake;
     }
   }
 }

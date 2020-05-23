@@ -2,14 +2,17 @@
 var Snake3D_Improved;
 (function (Snake3D_Improved) {
     class Snake {
-        //body: SnakeElement[] = [];
-        constructor(position) {
+        constructor(_position, _graph) {
+            this.graph = _graph;
             this.head = this.CreateNewElement();
-            this.head.elementNode.mtxLocal.translation = position;
-            this.head.position = position;
+            this.head.elementNode.mtxLocal.translation = _position;
+            this.head.position = _position;
             this.head.newElement = false;
         }
         Move() {
+            if (this.IsOnEdge() == true) {
+                this.Rotate(Snake3D_Improved.ƒ.Vector3.X(-90));
+            }
             this.head.elementNode.cmpTransform.local.translateY(1);
             if (this.head.nextElement != null) {
                 this.head.nextElement.Move();
@@ -21,8 +24,8 @@ var Snake3D_Improved;
                 this.head.nextElement.UpdatePosition();
             }
         }
-        Rotate(rotation) {
-            this.head.elementNode.cmpTransform.local.rotate(rotation);
+        Rotate(_rotation) {
+            this.head.elementNode.cmpTransform.local.rotate(_rotation);
         }
         AddSnakeElement() {
             let lastElement = this.GetLastElement(this.head);
@@ -36,11 +39,11 @@ var Snake3D_Improved;
         IsSnakeCollidingWhithItSelf() {
             return this.IsSnakeCollidingWith(this.head.position);
         }
-        IsSnakeCollidingWith(position) {
+        IsSnakeCollidingWith(_position) {
             let endReached = false;
             let actualElement = this.head.nextElement;
             while (!endReached) {
-                let result = new ƒ.Vector3(actualElement.position.x - position.x, actualElement.position.y - position.y, actualElement.position.z - position.z);
+                let result = new Snake3D_Improved.ƒ.Vector3(actualElement.position.x - _position.x, actualElement.position.y - _position.y, actualElement.position.z - _position.z);
                 if (result.magnitude < 1) {
                     return true;
                 }
@@ -53,36 +56,45 @@ var Snake3D_Improved;
             }
             return false;
         }
-        IsSnakeOnPosition(position) {
-            let result = new ƒ.Vector3(this.head.position.x - position.x, this.head.position.y - position.y, this.head.position.z - position.z);
+        CheckCollisionWithFood(_food) {
+            _food.forEach((element, i) => {
+                if (this.IsSnakeOnPosition(element.mtxLocal.translation)) {
+                    this.AddSnakeElement();
+                    this.graph.removeChild(element);
+                    _food.splice(i, 1);
+                }
+            });
+            return _food;
+        }
+        IsSnakeOnPosition(_position) {
+            let result = new Snake3D_Improved.ƒ.Vector3(this.head.position.x - _position.x, this.head.position.y - _position.y, this.head.position.z - _position.z);
             if (result.magnitude < 1)
                 return true;
             return false;
         }
         IsOnEdge() {
-            //TODO 
-            return false;
+            let newTranslation = this.head.elementNode.cmpTransform.local.copy;
+            newTranslation.translateY(1);
+            let corner = new Snake3D_Improved.ƒ.Vector3(Snake3D_Improved.data.gameFieldSize.x / 2, Snake3D_Improved.data.gameFieldSize.y / 2, Snake3D_Improved.data.gameFieldSize.z / 2);
+            let oppCorner = Snake3D_Improved.ƒ.Vector3.SCALE(corner, -1);
+            corner.add(new Snake3D_Improved.ƒ.Vector3(1, 1, 1));
+            return !newTranslation.translation.isInsideCube(corner, oppCorner);
         }
         CreateNewElement() {
-            let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("White")));
-            let meshQuad = new ƒ.MeshCube;
-            let elementNode = new ƒ.Node("SnakeElement");
-            elementNode.addComponent(new ƒ.ComponentTransform());
-            elementNode.addComponent(new ƒ.ComponentMaterial(mtrSolidWhite));
-            elementNode.addComponent(new ƒ.ComponentMesh(meshQuad));
-            //elementNode.cmpTransform.local.scale(new ƒ.Vector3(0.8, 0.8, 0.8));
-            elementNode.getComponent(ƒ.ComponentMesh).pivot.scale(new ƒ.Vector3(0.8, 0.8, 0.8));
+            let mtrSolidWhite = new Snake3D_Improved.ƒ.Material("SolidWhite", Snake3D_Improved.ƒ.ShaderFlat, new Snake3D_Improved.ƒ.CoatColored(Snake3D_Improved.ƒ.Color.CSS("White")));
+            let meshQuad = new Snake3D_Improved.ƒ.MeshCube;
+            let elementNode = new Snake3D_Improved.ƒ.Node("SnakeElement");
+            elementNode.addComponent(new Snake3D_Improved.ƒ.ComponentTransform());
+            elementNode.addComponent(new Snake3D_Improved.ƒ.ComponentMaterial(mtrSolidWhite));
+            elementNode.addComponent(new Snake3D_Improved.ƒ.ComponentMesh(meshQuad));
+            elementNode.getComponent(Snake3D_Improved.ƒ.ComponentMesh).pivot.scale(new Snake3D_Improved.ƒ.Vector3(0.8, 0.8, 0.8));
+            this.graph.appendChild(elementNode);
             let snakeElement = new Snake3D_Improved.SnakeElement();
             snakeElement.elementNode = elementNode;
             return snakeElement;
         }
-        GetLastElement(element) {
-            if (element.nextElement != null) {
-                return this.GetLastElement(element.nextElement);
-            }
-            else {
-                return element;
-            }
+        GetLastElement(_element) {
+            return _element.nextElement != null ? this.GetLastElement(_element.nextElement) : _element;
         }
     }
     Snake3D_Improved.Snake = Snake;

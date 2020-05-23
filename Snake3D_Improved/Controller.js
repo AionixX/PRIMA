@@ -2,9 +2,12 @@
 var Snake3D_Improved;
 (function (Snake3D_Improved) {
     class Controller {
-        Start() {
+        constructor(_name, _snake) {
+            this.name = _name;
+            this.snake = _snake;
         }
-        Update() {
+        GetSnake() {
+            return this.snake;
         }
     }
     Snake3D_Improved.Controller = Controller;
