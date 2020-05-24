@@ -4,6 +4,7 @@ namespace Snake3D_Improved {
     roundTime: number;
     nEnemys: number;
     controller: EnemyController[];
+    snakes: Snake[];
     playerSnake: Snake;
     timeLeft: number;
     graph: ƒ.Node;
@@ -17,18 +18,47 @@ namespace Snake3D_Improved {
       this.timeLeft = this.roundTime;
       this.nEnemys = _nEnemys;
       this.controller = [];
+      this.snakes = [];
       this.graph = _graph;
       this.viewport = _viewport;
       this.gamePaused = false;
       this.gameEnded = false;
       this.playerSnake = this.CreatePlayerSnake();
-      this.food = this.CreateFood();
+      this.snakes.push(this.playerSnake);
+      this.food = this.CreateFoodArray();
 
-      for (let i: number = 0; i < this.nEnemys; i++) {
-        this.controller.push(this.CreateEnemyController());
+      for (let i: number = 1; i <= this.nEnemys; i++) {
+        this.controller.push(this.CreateEnemyController(i));
+      }
+      this.controller.forEach(element => {
+        this.snakes.push(element.GetSnake());
+      });
+
+      let time: ƒ.Time = new ƒ.Time();
+      time.setTimer(1000, 0, () => {
+        this.timeLeft--;
+      });
+    }
+    public EndGame(): void {
+      this.gameEnded = true;
+      let winner: string = "";
+      let winnerCount: number = 0;
+      this.snakes.forEach(snake => {
+        if (snake.GetElementsCount(snake.head) > winnerCount) {
+          winner = snake.color;
+          winnerCount = snake.GetElementsCount(snake.head);
+        }
+      });
+      let answer: boolean = window.confirm("Winner ist: " + winner + " with " + winnerCount + " elements. Want to play again?");
+      if (answer) {
+        window.location.reload();
       }
     }
     public Update(): void {
+      if (this.timeLeft <= 0) {
+        this.EndGame();
+        return;
+      }
       this.playerSnake.Move();
       this.playerSnake.UpdatePosition();
       this.gameEnded = this.playerSnake.IsSnakeCollidingWhithItSelf();
@@ -38,9 +68,16 @@ namespace Snake3D_Improved {
         _controller.Update();
         this.food = _controller.CheckCollisionWithFood(this.food);
       }
+      this.snakes.forEach(snake => {
+        this.snakes.forEach(otherSnake => {
+          if (snake !== otherSnake) {
+            snake.CheckCollisionWithSnake(otherSnake.head);
+          }
+        });
+      });
       this.MoveCamera();
     }
-    
+
     public TurnPlayerSnakeLeft(): void {
       this.playerSnake.Rotate(ƒ.Vector3.Z(90));
     }
@@ -74,34 +111,51 @@ namespace Snake3D_Improved {
     }
     private CheckCollision(): void {
       this.food = this.playerSnake.CheckCollisionWithFood(this.food);
+
+      if (this.food.length < data.foodAmount) {
+        let foodPiece: ƒ.Node = this.CreateFood();
+        this.graph.appendChild(foodPiece);
+        this.food.push(foodPiece);
+      }
     }
     private CreatePlayerSnake(): Snake {
-      let snake: Snake = new Snake(new ƒ.Vector3(0, 0, (data.gameFieldSize.z / 2) + 1), this.graph);
+      let snake: Snake = new Snake(new ƒ.Vector3(0, 0, (data.gameFieldSize.z / 2) + 1), this.graph, "White");
       return snake;
     }
-    private CreateEnemyController(): EnemyController {
-      let enemySnake: EnemySnake = new EnemySnake(this.GetRandomPosition(), this.graph);
+    private CreateEnemyController(_i: number): EnemyController {
+      let x: number = Math.ceil(_i / 2) + 1;
+      let posX: number = _i % 2 == 0 ? x * data.startDistance : -x * data.startDistance;
+      let enemySnake: Snake = new Snake(new ƒ.Vector3(posX, 0, (data.gameFieldSize.z / 2) + 1), this.graph, EnemyColor[_i - 1]);
       let enemyController: EnemyController = new EnemyController("EnemySnake", enemySnake, data.enemyDetectionRange);
       return enemyController;
     }
-    private CreateFood(): ƒ.Node[] {
+    private CreateFoodArray(): ƒ.Node[] {
       let foodContainer: ƒ.Node[] = [];
-      let meshCube: ƒ.Mesh = new ƒ.MeshCube();
-      let mtrSolidRed: ƒ.Material = new ƒ.Material("SolidRed", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
 
       for (let i: number = 0; i < data.foodAmount; i++) {
-        let food: ƒ.Node = CreateNode("Food", meshCube, mtrSolidRed, this.GetRandomPosition(), ƒ.Vector3.ONE(0.8));
-        foodContainer.push(food);
+        let food: ƒ.Node = this.CreateFood();
         this.graph.appendChild(food);
+        foodContainer.push(food);
       }
       return foodContainer;
     }
+    private CreateFood(): ƒ.Node {
+      let meshCube: ƒ.Mesh = new ƒ.MeshCube();
+      let mtrSolidRed: ƒ.Material = new ƒ.Material("SolidRed", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
+      let food: ƒ.Node = CreateNode("Food", meshCube, mtrSolidRed, this.GetRandomPosition(), ƒ.Vector3.ONE(0.8));
+      return food;
+    }
     private GetRandomPosition(): ƒ.Vector3 {
-      let x: number = Math.floor((Math.random() * data.gameFieldSize.x + 3) - ((data.gameFieldSize.x + 2) / 2));
-      let y: number = Math.floor((Math.random() * data.gameFieldSize.y + 3) - ((data.gameFieldSize.y + 2) / 2));
+      let position: ƒ.Vector3 = new ƒ.Vector3(
+        ƒ.Random.default.getRangeFloored(-data.gameFieldSize.x / 2, data.gameFieldSize.x / 2),
+        ƒ.Random.default.getRangeFloored(-data.gameFieldSize.y / 2, data.gameFieldSize.y / 2),
+        ƒ.Random.default.getSign() * data.gameFieldSize.z / 2
+      );
+      /*let x: number = Math.floor((Math.random() * (data.gameFieldSize.x + 2)) - ((data.gameFieldSize.x + 2) / 2) + 1);
+      let y: number = Math.floor((Math.random() * (data.gameFieldSize.y + 2)) - ((data.gameFieldSize.y + 2) / 2) + 1);
       let z: number = 11;
-      let pos: ƒ.Vector3 = new ƒ.Vector3(x, y, z);
-      return pos;
+      let pos: ƒ.Vector3 = new ƒ.Vector3(x, y, z);*/
+      return position;
     }
   }
 }

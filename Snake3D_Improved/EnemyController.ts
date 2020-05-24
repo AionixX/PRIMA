@@ -19,7 +19,6 @@ namespace Snake3D_Improved {
     public Update(): void {
       switch (this.state) {
         case EnemyState.HUNT_FOR_FOOD:
-          console.log("here");
           this.CheckDirection();
           break;
       }

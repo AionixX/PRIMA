@@ -7,17 +7,45 @@ var Snake3D_Improved;
             this.timeLeft = this.roundTime;
             this.nEnemys = _nEnemys;
             this.controller = [];
+            this.snakes = [];
             this.graph = _graph;
             this.viewport = _viewport;
             this.gamePaused = false;
             this.gameEnded = false;
             this.playerSnake = this.CreatePlayerSnake();
-            this.food = this.CreateFood();
-            for (let i = 0; i < this.nEnemys; i++) {
-                this.controller.push(this.CreateEnemyController());
+            this.snakes.push(this.playerSnake);
+            this.food = this.CreateFoodArray();
+            for (let i = 1; i <= this.nEnemys; i++) {
+                this.controller.push(this.CreateEnemyController(i));
+            }
+            this.controller.forEach(element => {
+                this.snakes.push(element.GetSnake());
+            });
+            let time = new Snake3D_Improved.ƒ.Time();
+            time.setTimer(1000, 0, () => {
+                this.timeLeft--;
+            });
+        }
+        EndGame() {
+            this.gameEnded = true;
+            let winner = "";
+            let winnerCount = 0;
+            this.snakes.forEach(snake => {
+                if (snake.GetElementsCount(snake.head) > winnerCount) {
+                    winner = snake.color;
+                    winnerCount = snake.GetElementsCount(snake.head);
+                }
+            });
+            let answer = window.confirm("Winner ist: " + winner + " with " + winnerCount + " elements. Want to play again?");
+            if (answer) {
+                window.location.reload();
             }
         }
         Update() {
+            if (this.timeLeft <= 0) {
+                this.EndGame();
+                return;
+            }
             this.playerSnake.Move();
             this.playerSnake.UpdatePosition();
             this.gameEnded = this.playerSnake.IsSnakeCollidingWhithItSelf();
@@ -27,6 +55,13 @@ var Snake3D_Improved;
                 _controller.Update();
                 this.food = _controller.CheckCollisionWithFood(this.food);
             }
+            this.snakes.forEach(snake => {
+                this.snakes.forEach(otherSnake => {
+                    if (snake !== otherSnake) {
+                        snake.CheckCollisionWithSnake(otherSnake.head);
+                    }
+                });
+            });
             this.MoveCamera();
         }
         TurnPlayerSnakeLeft() {
@@ -63,33 +98,45 @@ var Snake3D_Improved;
         }
         CheckCollision() {
             this.food = this.playerSnake.CheckCollisionWithFood(this.food);
+            if (this.food.length < Snake3D_Improved.data.foodAmount) {
+                let foodPiece = this.CreateFood();
+                this.graph.appendChild(foodPiece);
+                this.food.push(foodPiece);
+            }
         }
         CreatePlayerSnake() {
-            let snake = new Snake3D_Improved.Snake(new Snake3D_Improved.ƒ.Vector3(0, 0, (Snake3D_Improved.data.gameFieldSize.z / 2) + 1), this.graph);
+            let snake = new Snake3D_Improved.Snake(new Snake3D_Improved.ƒ.Vector3(0, 0, (Snake3D_Improved.data.gameFieldSize.z / 2) + 1), this.graph, "White");
             return snake;
         }
-        CreateEnemyController() {
-            let enemySnake = new Snake3D_Improved.EnemySnake(this.GetRandomPosition(), this.graph);
+        CreateEnemyController(_i) {
+            let x = Math.ceil(_i / 2) + 1;
+            let posX = _i % 2 == 0 ? x * Snake3D_Improved.data.startDistance : -x * Snake3D_Improved.data.startDistance;
+            let enemySnake = new Snake3D_Improved.Snake(new Snake3D_Improved.ƒ.Vector3(posX, 0, (Snake3D_Improved.data.gameFieldSize.z / 2) + 1), this.graph, Snake3D_Improved.EnemyColor[_i - 1]);
             let enemyController = new Snake3D_Improved.EnemyController("EnemySnake", enemySnake, Snake3D_Improved.data.enemyDetectionRange);
             return enemyController;
         }
-        CreateFood() {
+        CreateFoodArray() {
             let foodContainer = [];
-            let meshCube = new Snake3D_Improved.ƒ.MeshCube();
-            let mtrSolidRed = new Snake3D_Improved.ƒ.Material("SolidRed", Snake3D_Improved.ƒ.ShaderFlat, new Snake3D_Improved.ƒ.CoatColored(Snake3D_Improved.ƒ.Color.CSS("Red")));
             for (let i = 0; i < Snake3D_Improved.data.foodAmount; i++) {
-                let food = Snake3D_Improved.CreateNode("Food", meshCube, mtrSolidRed, this.GetRandomPosition(), Snake3D_Improved.ƒ.Vector3.ONE(0.8));
-                foodContainer.push(food);
+                let food = this.CreateFood();
                 this.graph.appendChild(food);
+                foodContainer.push(food);
             }
             return foodContainer;
         }
+        CreateFood() {
+            let meshCube = new Snake3D_Improved.ƒ.MeshCube();
+            let mtrSolidRed = new Snake3D_Improved.ƒ.Material("SolidRed", Snake3D_Improved.ƒ.ShaderFlat, new Snake3D_Improved.ƒ.CoatColored(Snake3D_Improved.ƒ.Color.CSS("Red")));
+            let food = Snake3D_Improved.CreateNode("Food", meshCube, mtrSolidRed, this.GetRandomPosition(), Snake3D_Improved.ƒ.Vector3.ONE(0.8));
+            return food;
+        }
         GetRandomPosition() {
-            let x = Math.floor((Math.random() * Snake3D_Improved.data.gameFieldSize.x + 3) - ((Snake3D_Improved.data.gameFieldSize.x + 2) / 2));
-            let y = Math.floor((Math.random() * Snake3D_Improved.data.gameFieldSize.y + 3) - ((Snake3D_Improved.data.gameFieldSize.y + 2) / 2));
-            let z = 11;
-            let pos = new Snake3D_Improved.ƒ.Vector3(x, y, z);
-            return pos;
+            let position = new Snake3D_Improved.ƒ.Vector3(Snake3D_Improved.ƒ.Random.default.getRangeFloored(-Snake3D_Improved.data.gameFieldSize.x / 2, Snake3D_Improved.data.gameFieldSize.x / 2), Snake3D_Improved.ƒ.Random.default.getRangeFloored(-Snake3D_Improved.data.gameFieldSize.y / 2, Snake3D_Improved.data.gameFieldSize.y / 2), Snake3D_Improved.ƒ.Random.default.getSign() * Snake3D_Improved.data.gameFieldSize.z / 2);
+            /*let x: number = Math.floor((Math.random() * (data.gameFieldSize.x + 2)) - ((data.gameFieldSize.x + 2) / 2) + 1);
+            let y: number = Math.floor((Math.random() * (data.gameFieldSize.y + 2)) - ((data.gameFieldSize.y + 2) / 2) + 1);
+            let z: number = 11;
+            let pos: ƒ.Vector3 = new ƒ.Vector3(x, y, z);*/
+            return position;
         }
     }
     Snake3D_Improved.GameController = GameController;

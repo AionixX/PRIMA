@@ -16,7 +16,6 @@ var Snake3D_Improved;
         Update() {
             switch (this.state) {
                 case Snake3D_Improved.EnemyState.HUNT_FOR_FOOD:
-                    console.log("here");
                     this.CheckDirection();
                     break;
             }
