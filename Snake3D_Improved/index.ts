@@ -19,6 +19,23 @@ namespace Snake3D_Improved {
       data.nEnemys = parseInt(enemyInput.value);
     });
 
+    let timeInput: HTMLInputElement = document.querySelector("#time");
+    timeInput.addEventListener("change", () => {
+      data.roundTime = parseInt(timeInput.value);
+    });
+
+    let foodInput: HTMLInputElement = document.querySelector("#nFood");
+    foodInput.addEventListener("change", () => {
+      data.foodAmount = parseInt(foodInput.value);
+    });
+
+    let fpsInput: HTMLInputElement = document.querySelector("#fps");
+    fpsInput.addEventListener("change", () => {
+      data.fps = parseInt(fpsInput.value);
+    });
+
+    
+
     let startButton: HTMLButtonElement = document.querySelector("#startGame");
     startButton.addEventListener("click", StartGame);
     
@@ -57,6 +74,7 @@ namespace Snake3D_Improved {
 
     gameController.Update();
     viewport.draw();
+
   }
   function HandleInput(_event: KeyboardEvent): void {
     switch (_event.code) {

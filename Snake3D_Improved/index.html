@@ -19,8 +19,12 @@
 </head>
 <body>
   <h1>Snake</h1>
-  <span>Enemys: </span><input name="nEnemys" id="nEnemys" type="number" value="2" max="4", min="1"><br>,
+  <span>Enemys: </span><input name="nEnemys" id="nEnemys" type="number" value="2" max="4", min="1">
+  <span>Round time: </span><input name="time" id="time" type="number" value="60" max="120", min="20">
+  <span>Food: </span><input name="nFood" id="nFood" type="number" value="20" max="30", min="1">
+  <span>FPS: </span><input name="fps" id="fps" type="number" value="3" max="30", min="1">
   <button id="startGame">Start Game</button>
+  <span>Time left: <span id="timeLeft">60</span></span></br>
   <canvas id="game" width="800" height="600"></canvas>
 </body>
 </html>

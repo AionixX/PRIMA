@@ -11,10 +11,10 @@ namespace Snake3D_Improved {
   }
 
   export let data: Data = {
-    roundTime: 30,
+    roundTime: 60,
     nEnemys: 2,
     fps: 3,
-    foodAmount: 15,
+    foodAmount: 20,
     startDistance: 2,
     enemyDetectionRange: 6,
     gameFieldSize: new ƒ.Vector3(20, 20, 20)

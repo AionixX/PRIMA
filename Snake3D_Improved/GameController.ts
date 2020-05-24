@@ -12,6 +12,7 @@ namespace Snake3D_Improved {
     viewport: ƒ.Viewport;
     gamePaused: boolean;
     gameEnded: boolean;
+    timeLeftSpan: HTMLSpanElement;
 
     constructor(_roundTime: number, _nEnemys: number, _graph: ƒ.Node, _viewport: ƒ.Viewport) {
       this.roundTime = _roundTime;
@@ -26,6 +27,8 @@ namespace Snake3D_Improved {
       this.playerSnake = this.CreatePlayerSnake();
       this.snakes.push(this.playerSnake);
       this.food = this.CreateFoodArray();
+
+      this.timeLeftSpan = document.querySelector("#timeLeft");
 
       for (let i: number = 1; i <= this.nEnemys; i++) {
         this.controller.push(this.CreateEnemyController(i));
@@ -59,6 +62,8 @@ namespace Snake3D_Improved {
         this.EndGame();
         return;
       }
+      this.timeLeftSpan.innerText = this.timeLeft.toString();
+      
       this.playerSnake.Move();
       this.playerSnake.UpdatePosition();
       

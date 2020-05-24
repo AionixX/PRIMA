@@ -15,6 +15,7 @@ var Snake3D_Improved;
             this.playerSnake = this.CreatePlayerSnake();
             this.snakes.push(this.playerSnake);
             this.food = this.CreateFoodArray();
+            this.timeLeftSpan = document.querySelector("#timeLeft");
             for (let i = 1; i <= this.nEnemys; i++) {
                 this.controller.push(this.CreateEnemyController(i));
             }
@@ -46,6 +47,7 @@ var Snake3D_Improved;
                 this.EndGame();
                 return;
             }
+            this.timeLeftSpan.innerText = this.timeLeft.toString();
             this.playerSnake.Move();
             this.playerSnake.UpdatePosition();
             this.gameEnded = this.playerSnake.IsSnakeCollidingWhithItSelf();

@@ -84,7 +84,7 @@ namespace Snake3D_Improved {
         } else {
           if (_snakeElement.nextElement) {
             _snakeElement.nextElement.previousElement = this.GetLastElement(this.head);
-            this.ChangePosOfAll(_snakeElement, this.GetLastElement(this.head).position);
+            this.ChangePosOfAll(_snakeElement.nextElement, this.GetLastElement(this.head).position);
             this.GetLastElement(this.head).nextElement = _snakeElement.nextElement;
             _snakeElement.nextElement = null;
           }

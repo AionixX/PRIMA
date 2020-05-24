@@ -13,6 +13,18 @@ var Snake3D_Improved;
         enemyInput.addEventListener("change", () => {
             Snake3D_Improved.data.nEnemys = parseInt(enemyInput.value);
         });
+        let timeInput = document.querySelector("#time");
+        timeInput.addEventListener("change", () => {
+            Snake3D_Improved.data.roundTime = parseInt(timeInput.value);
+        });
+        let foodInput = document.querySelector("#nFood");
+        foodInput.addEventListener("change", () => {
+            Snake3D_Improved.data.foodAmount = parseInt(foodInput.value);
+        });
+        let fpsInput = document.querySelector("#fps");
+        fpsInput.addEventListener("change", () => {
+            Snake3D_Improved.data.fps = parseInt(fpsInput.value);
+        });
         let startButton = document.querySelector("#startGame");
         startButton.addEventListener("click", StartGame);
     }
