@@ -9,6 +9,15 @@ var Snake3D_Improved;
     var gameController;
     function Init() {
         document.addEventListener("keydown", HandleInput);
+        let enemyInput = document.querySelector("#nEnemys");
+        enemyInput.addEventListener("change", () => {
+            Snake3D_Improved.data.nEnemys = parseInt(enemyInput.value);
+        });
+        let startButton = document.querySelector("#startGame");
+        startButton.addEventListener("click", StartGame);
+    }
+    function StartGame() {
+        console.log("Heer");
         camera = new Snake3D_Improved.ƒ.ComponentCamera();
         camera.pivot.translateZ(50);
         camera.pivot.rotateY(180);

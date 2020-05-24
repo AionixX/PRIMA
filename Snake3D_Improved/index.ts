@@ -14,6 +14,17 @@ namespace Snake3D_Improved {
 
     document.addEventListener("keydown", HandleInput);
 
+    let enemyInput: HTMLInputElement = document.querySelector("#nEnemys");
+    enemyInput.addEventListener("change", () => {
+      data.nEnemys = parseInt(enemyInput.value);
+    });
+
+    let startButton: HTMLButtonElement = document.querySelector("#startGame");
+    startButton.addEventListener("click", StartGame);
+    
+  }
+  function StartGame(): void {
+    console.log("Heer");
     camera = new ƒ.ComponentCamera();
     camera.pivot.translateZ(50);
     camera.pivot.rotateY(180);

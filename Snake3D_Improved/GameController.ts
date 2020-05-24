@@ -61,7 +61,11 @@ namespace Snake3D_Improved {
       }
       this.playerSnake.Move();
       this.playerSnake.UpdatePosition();
+      
       this.gameEnded = this.playerSnake.IsSnakeCollidingWhithItSelf();
+      if (this.gameEnded)
+        this.EndGame();
+
       this.CheckCollision();
       for (let _controller of this.controller) {
         _controller.EvaluateState(this.food);
