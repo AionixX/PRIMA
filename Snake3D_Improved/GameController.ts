@@ -63,10 +63,10 @@ namespace Snake3D_Improved {
         return;
       }
       this.timeLeftSpan.innerText = this.timeLeft.toString();
-      
+
       this.playerSnake.Move();
       this.playerSnake.UpdatePosition();
-      
+
       this.gameEnded = this.playerSnake.IsSnakeCollidingWhithItSelf();
       if (this.gameEnded)
         this.EndGame();
@@ -155,16 +155,35 @@ namespace Snake3D_Improved {
       return food;
     }
     private GetRandomPosition(): ƒ.Vector3 {
-      let position: ƒ.Vector3 = new ƒ.Vector3(
-        ƒ.Random.default.getRangeFloored(-data.gameFieldSize.x / 2, data.gameFieldSize.x / 2),
-        ƒ.Random.default.getRangeFloored(-data.gameFieldSize.y / 2, data.gameFieldSize.y / 2),
-        ƒ.Random.default.getSign() * data.gameFieldSize.z / 2
-      );
-      /*let x: number = Math.floor((Math.random() * (data.gameFieldSize.x + 2)) - ((data.gameFieldSize.x + 2) / 2) + 1);
+      let x: number = Math.floor((Math.random() * (data.gameFieldSize.x + 2)) - ((data.gameFieldSize.x + 2) / 2) + 1);
       let y: number = Math.floor((Math.random() * (data.gameFieldSize.y + 2)) - ((data.gameFieldSize.y + 2) / 2) + 1);
-      let z: number = 11;
-      let pos: ƒ.Vector3 = new ƒ.Vector3(x, y, z);*/
-      return position;
+      let z: number = Math.floor((Math.random() * (data.gameFieldSize.y + 2)) - ((data.gameFieldSize.y + 2) / 2) + 1);
+
+      let rndSide: number = Math.floor(Math.random() * 6);
+      switch (rndSide) {
+        case 0:
+          x = -(data.gameFieldSize.x / 2);
+          break;
+        case 1:
+          x = (data.gameFieldSize.x / 2 + 1);
+          break;
+        case 2:
+          y = -(data.gameFieldSize.y / 2);
+          break;
+        case 3:
+          y = (data.gameFieldSize.y / 2 + 1);
+          break;
+        case 4:
+          z = -(data.gameFieldSize.z / 2);
+          break;
+        case 5:
+          z = (data.gameFieldSize.z / 2 + 1);
+          break;
+        default:
+          break;
+      }
+      let pos: ƒ.Vector3 = new ƒ.Vector3(x, y, z);
+      return pos;
     }
   }
 }

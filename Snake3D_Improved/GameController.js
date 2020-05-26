@@ -135,12 +135,34 @@ var Snake3D_Improved;
             return food;
         }
         GetRandomPosition() {
-            let position = new Snake3D_Improved.ƒ.Vector3(Snake3D_Improved.ƒ.Random.default.getRangeFloored(-Snake3D_Improved.data.gameFieldSize.x / 2, Snake3D_Improved.data.gameFieldSize.x / 2), Snake3D_Improved.ƒ.Random.default.getRangeFloored(-Snake3D_Improved.data.gameFieldSize.y / 2, Snake3D_Improved.data.gameFieldSize.y / 2), Snake3D_Improved.ƒ.Random.default.getSign() * Snake3D_Improved.data.gameFieldSize.z / 2);
-            /*let x: number = Math.floor((Math.random() * (data.gameFieldSize.x + 2)) - ((data.gameFieldSize.x + 2) / 2) + 1);
-            let y: number = Math.floor((Math.random() * (data.gameFieldSize.y + 2)) - ((data.gameFieldSize.y + 2) / 2) + 1);
-            let z: number = 11;
-            let pos: ƒ.Vector3 = new ƒ.Vector3(x, y, z);*/
-            return position;
+            let x = Math.floor((Math.random() * (Snake3D_Improved.data.gameFieldSize.x + 2)) - ((Snake3D_Improved.data.gameFieldSize.x + 2) / 2) + 1);
+            let y = Math.floor((Math.random() * (Snake3D_Improved.data.gameFieldSize.y + 2)) - ((Snake3D_Improved.data.gameFieldSize.y + 2) / 2) + 1);
+            let z = Math.floor((Math.random() * (Snake3D_Improved.data.gameFieldSize.y + 2)) - ((Snake3D_Improved.data.gameFieldSize.y + 2) / 2) + 1);
+            let rndSide = Math.floor(Math.random() * 6);
+            switch (rndSide) {
+                case 0:
+                    x = -(Snake3D_Improved.data.gameFieldSize.x / 2);
+                    break;
+                case 1:
+                    x = (Snake3D_Improved.data.gameFieldSize.x / 2 + 1);
+                    break;
+                case 2:
+                    y = -(Snake3D_Improved.data.gameFieldSize.y / 2);
+                    break;
+                case 3:
+                    y = (Snake3D_Improved.data.gameFieldSize.y / 2 + 1);
+                    break;
+                case 4:
+                    z = -(Snake3D_Improved.data.gameFieldSize.z / 2);
+                    break;
+                case 5:
+                    z = (Snake3D_Improved.data.gameFieldSize.z / 2 + 1);
+                    break;
+                default:
+                    break;
+            }
+            let pos = new Snake3D_Improved.ƒ.Vector3(x, y, z);
+            return pos;
         }
     }
     Snake3D_Improved.GameController = GameController;
