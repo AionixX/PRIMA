@@ -42,6 +42,7 @@ namespace Snake3D_Improved {
         this.timeLeft--;
       });
     }
+
     public EndGame(): void {
       this.gameEnded = true;
       let winner: string = "";
@@ -57,6 +58,7 @@ namespace Snake3D_Improved {
         window.location.reload();
       }
     }
+
     public Update(): void {
       if (this.timeLeft <= 0) {
         this.EndGame();
@@ -90,12 +92,15 @@ namespace Snake3D_Improved {
     public TurnPlayerSnakeLeft(): void {
       this.playerSnake.Rotate(ƒ.Vector3.Z(90));
     }
+
     public TurnPlayerSnakeRight(): void {
       this.playerSnake.Rotate(ƒ.Vector3.Z(-90));
     }
+
     public AddElementToPlayerSnake(): void {
       this.playerSnake.AddSnakeElement();
     }
+
     public MoveCamera(): void {
       let mtxHead: ƒ.Matrix4x4 = this.playerSnake.head.elementNode.mtxLocal;
       let posCamera: ƒ.Vector3 = mtxHead.translation;
@@ -109,15 +114,19 @@ namespace Snake3D_Improved {
         console.log("cant normalize");
       }
     }
+
     public PauseGame(): void {
       this.gamePaused = !this.gamePaused;
     }
+
     public IsGamePaused(): boolean {
       return this.gamePaused;
     }
+
     public IsGameEnded(): boolean {
       return this.gameEnded;
     }
+
     private CheckCollision(): void {
       this.food = this.playerSnake.CheckCollisionWithFood(this.food);
 
@@ -127,10 +136,12 @@ namespace Snake3D_Improved {
         this.food.push(foodPiece);
       }
     }
+
     private CreatePlayerSnake(): Snake {
       let snake: Snake = new Snake(new ƒ.Vector3(0, 0, (data.gameFieldSize.z / 2) + 1), this.graph, "White");
       return snake;
     }
+
     private CreateEnemyController(_i: number): EnemyController {
       let x: number = Math.ceil(_i / 2) + 1;
       let posX: number = _i % 2 == 0 ? x * data.startDistance : -x * data.startDistance;
@@ -138,6 +149,7 @@ namespace Snake3D_Improved {
       let enemyController: EnemyController = new EnemyController("EnemySnake", enemySnake, data.enemyDetectionRange);
       return enemyController;
     }
+
     private CreateFoodArray(): ƒ.Node[] {
       let foodContainer: ƒ.Node[] = [];
 
@@ -148,12 +160,14 @@ namespace Snake3D_Improved {
       }
       return foodContainer;
     }
+
     private CreateFood(): ƒ.Node {
       let meshCube: ƒ.Mesh = new ƒ.MeshCube();
       let mtrSolidRed: ƒ.Material = new ƒ.Material("SolidRed", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("Red")));
       let food: ƒ.Node = CreateNode("Food", meshCube, mtrSolidRed, this.GetRandomPosition(), ƒ.Vector3.ONE(0.8));
       return food;
     }
+
     private GetRandomPosition(): ƒ.Vector3 {
       let x: number = Math.floor((Math.random() * (data.gameFieldSize.x + 2)) - ((data.gameFieldSize.x + 2) / 2) + 1);
       let y: number = Math.floor((Math.random() * (data.gameFieldSize.y + 2)) - ((data.gameFieldSize.y + 2) / 2) + 1);
