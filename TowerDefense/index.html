@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="stylesheet.css">
+  <script src="../FudgeCore/FudgeCore.js"></script>
+  <script src="../FudgeAid/FudgeAid.js"></script>
+  <script src="./Util.js"></script>
+  <script src="./Data.js"></script>
+  <script src="./index.js"></script>
+  <title>Tower Defense</title>
+</head>
+<body>
+  <header>
+    <h1>
+      Tower Defense
+    </h1>
+  </header>
+  <main>
+    <div>
+      <span>0 %</span>
+      <input type="range" disabled="true" id="baseLife">
+      <span>100 %</span>
+      <span>
+        <span>
+          | Money: 
+        </span>
+        <span id="money">
+          100
+        </span>
+        <span>
+          $$
+        </span>
+      </span>
+      <span>
+        <span>
+          | Time: 
+        </span>
+        <span id="time">
+          15.00
+        </span>
+      </span>
+    </div>
+    <canvas width="800" height="600"></canvas>
+  </main>
+</body>
+</html>
