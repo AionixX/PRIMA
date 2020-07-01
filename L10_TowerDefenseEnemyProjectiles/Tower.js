@@ -1,6 +1,6 @@
 "use strict";
-var L09_TowerDefenseStart;
-(function (L09_TowerDefenseStart) {
+var L10_TowerDefenseEnemyProjectiles;
+(function (L10_TowerDefenseEnemyProjectiles) {
     var ƒAid = FudgeAid;
     let Tower = /** @class */ (() => {
         class Tower extends ƒ.Node {
@@ -12,6 +12,8 @@ var L09_TowerDefenseStart;
                 this.rate = 0.5;
                 let base = new ƒAid.Node("Base", null, Tower.material, Tower.meshBase);
                 this.top = new ƒAid.Node("Top", ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1)), Tower.material, Tower.meshTop);
+                let mtxTop = this.top.getComponent(ƒ.ComponentMesh).pivot;
+                mtxTop.rotateZ(90);
                 this.gun = new ƒAid.Node("Base", ƒ.Matrix4x4.IDENTITY(), Tower.material, Tower.meshGun);
                 let mtxGun = this.gun.getComponent(ƒ.ComponentMesh).pivot;
                 mtxGun.scale(new ƒ.Vector3(0.1, 0.1, 1));
@@ -25,8 +27,7 @@ var L09_TowerDefenseStart;
                 let distanceSquared = ƒ.Vector3.DIFFERENCE(this.mtxWorld.translation, _enemy.mtxWorld.translation).magnitudeSquared;
                 if (distanceSquared > (this.range * this.range))
                     return;
-                this.top.mtxLocal.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
-                // this.gun.mtxLocal.lookAt(_enemy.mtxWorld.translation);
+                this.top.cmpTransform.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
             }
         }
         Tower.material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());
@@ -35,6 +36,6 @@ var L09_TowerDefenseStart;
         Tower.meshGun = new ƒ.MeshCube();
         return Tower;
     })();
-    L09_TowerDefenseStart.Tower = Tower;
-})(L09_TowerDefenseStart || (L09_TowerDefenseStart = {}));
+    L10_TowerDefenseEnemyProjectiles.Tower = Tower;
+})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
 //# sourceMappingURL=Tower.js.map

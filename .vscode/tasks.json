@@ -15,7 +15,7 @@
             "command": "tsc -watch",
             "auto": true,
             "runOptions": {
-                "runOn": "folderOpen"
+                "runOn": "default"
             }
         }
     ]
