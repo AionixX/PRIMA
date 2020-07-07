@@ -1,0 +1,6 @@
+input[type="range"]:disabled::-webkit-slider-runnable-track  {
+  background-color: green;
+}
+canvas {
+  background-color: black;
+}

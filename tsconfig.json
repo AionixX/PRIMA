@@ -55,6 +55,6 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
     "skipLibCheck": true
   },
-  "exclude": ["W19/*"]
+  "exclude": ["W19/*", "L09_TowerDefenseStart/*"]
   //This is a comment
 }
